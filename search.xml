@@ -46,6 +46,27 @@
     
     
     <entry>
+      <title>Qt数据库</title>
+      <link href="2023/03/24/Qt%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+      <url>2023/03/24/Qt%E6%95%B0%E6%8D%AE%E5%BA%93/</url>
+      
+        <content type="html"><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>&emsp;&emsp;最近项目遇到需求，每批芯片有上千颗，需要在一个温度点下完成所有的数据采集后，存入数据库，换芯片，采集，直到一批芯片全部采集完。由于这个数量级，想要将所有数据存在本地内存已经是很不现实很不方便了，所以必须引入数据库，以解决数据量的问题。<br>&emsp;&emsp;所以需要使用SQLite数据库，轻量，好用。而Qt与数据库交互需要用到的便是 QSqlDatabase相关的方法了。<br>&emsp;&emsp;本文章仅记录该次工作所用到的方法和流程。</p><h1 id="方法变量一览"><a href="#方法变量一览" class="headerlink" title="方法变量一览"></a>方法变量一览</h1><pre class="language-none"><code class="language-none">QSqlDatabase db;</code></pre><p>数据库交互的共用变量，管理与数据库的连接，所以需要声明在头文件。</p><pre class="language-none"><code class="language-none">db &#x3D; QSqlDatabase::addDatabase(&quot;QSQLITE&quot;,&quot;connect1&quot;);db.setDatabaseName(QApplication::applicationDirPath()+tr(&quot;&#x2F;test.db&quot;));db.open();</code></pre><p>此处为初始化数据库相关的内容，通过 addDatabase 来进行数据库类型（QSQLITE）和连接名称（connect1）的声明。因为本次内容为SQLITE，故第一个参数填QSQLITE，此外若为MYSQL，可填QMYSQL。第二个参数为非必要参数，用以在多个数据库建立连接时，做名字区分，不然会相互顶替连接。<br>setDatabaseName，在SQLITE中就是设置文件路径，若没有文件则创建文件，MySQL则是命名数据库。<br>open，开启与数据库的连接，任何sql语句都只有连接状态才能正确执行。  </p><pre class="language-none"><code class="language-none">QSqlQuery query(db);bool success &#x3D; query.exec(&quot;CREATE TABLE Mydatas(&quot;                            &quot;id INTEGER PRIMARY KEY AUTOINCREMENT,&quot;                            &quot;dataA INTEGER,&quot;                            &quot;dataB INTEGER,&quot;                            &quot;Result INTEGER)&quot;);QSqlQuery query(db);QString sql &#x3D; QString(&quot;UPDATE Mydatas SET Result &#x3D; %2 WHERE id &#x3D; %1&quot;)                        .arg(a).arg(b);query.prepare(sql);bool result &#x3D; query.exec();query.finish();</code></pre><p>执行SQL语句，可以通过 QString 字符串拼接实现数据绑定，也可通过 bindvalue 实现数据绑定。执行后一定要记得finish掉query，不然可能会影响事务的提交与回滚。</p><pre class="language-none"><code class="language-none">db.transaction();db.commit();db.rollback();</code></pre><p>事务方法很简单，通过 transaction 开启事务，往后所有的 sql 操作都算在事务当中，完成一个事务后通过 commit 提交事务，通过 rollback 回滚事务。这里需要注意每个 sql 操作前可能会有 db.open 检查操作，必须去掉，不然数据库的重新开启会关闭事务，导致 commit rollback 失败。  </p><pre class="language-none"><code class="language-none">if(res1&amp;&amp;res2)&#123;    if(!QSqlDatabase::database().commit())&#123;        QMessageBox::critical(this,&quot;Error&quot;,&quot;操作失败，将要回滚&quot;);        if(!QSqlDatabase::database().rollback())&#123;            QMessageBox::critical(this,&quot;Error&quot;,&quot;回滚失败&quot;);        &#125;    &#125;else&#123;        doShowBackResult();        &#x2F;&#x2F;qDebug()&lt;&lt;&quot;show &quot;;    &#125;    &#125;else&#123;    qDebug()&lt;&lt;query.lastError();    QMessageBox::critical(this,&quot;Error&quot;,&quot;操作失败，将要回滚&quot;);    if(!QSqlDatabase::database().rollback())&#123;        QMessageBox::critical(this,&quot;Error&quot;,&quot;回滚失败&quot;);        qDebug()&lt;&lt;QSqlDatabase::database().lastError();    &#125;&#125;</code></pre><p>上为标准事务写法，带错误信息。</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> Qt </tag>
+            
+            <tag> 技术 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>markdown学习笔记</title>
       <link href="2021/06/16/markdown%E5%AD%A6%E4%B9%A0/"/>
       <url>2021/06/16/markdown%E5%AD%A6%E4%B9%A0/</url>
