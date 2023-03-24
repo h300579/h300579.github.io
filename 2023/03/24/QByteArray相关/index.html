@@ -20,21 +20,21 @@
     var CONFIG = {"hostname":"h300579.vicp.hk","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="创建：screen -S ###">
+  <meta name="description" content="最近做了个芯片烧录的上位机，因为功能设计到串口连续数据读取打包解析等内容，需要用到 QByteArray，且存着原始二进制数据。关于 QByteArray 的详细介绍，有空可以阅览一下 Qt 的 help，这里记录下常用的相关操作，方便使用查阅用法。 访问与赋值访问数据有四种方式， [] at() data[] constData[]，其中 [] 和 at 为可读可写，at 和 constData">
 <meta property="og:type" content="article">
-<meta property="og:title" content="screen使用方法">
-<meta property="og:url" content="http://h300579.vicp.hk/2021/05/15/screen%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/index.html">
+<meta property="og:title" content="QByteArray 的使用方法与技巧">
+<meta property="og:url" content="http://h300579.vicp.hk/2023/03/24/QByteArray%E7%9B%B8%E5%85%B3/index.html">
 <meta property="og:site_name" content="h300579的Hexo博客">
-<meta property="og:description" content="创建：screen -S ###">
+<meta property="og:description" content="最近做了个芯片烧录的上位机，因为功能设计到串口连续数据读取打包解析等内容，需要用到 QByteArray，且存着原始二进制数据。关于 QByteArray 的详细介绍，有空可以阅览一下 Qt 的 help，这里记录下常用的相关操作，方便使用查阅用法。 访问与赋值访问数据有四种方式， [] at() data[] constData[]，其中 [] 和 at 为可读可写，at 和 constData">
 <meta property="og:locale">
-<meta property="article:published_time" content="2021-05-15T02:52:31.000Z">
-<meta property="article:modified_time" content="2021-06-16T09:13:03.000Z">
+<meta property="article:published_time" content="2023-03-24T08:38:37.171Z">
+<meta property="article:modified_time" content="2022-02-14T10:05:11.000Z">
 <meta property="article:author" content="h300579">
+<meta property="article:tag" content="Qt">
 <meta property="article:tag" content="技术">
-<meta property="article:tag" content="screen">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://h300579.vicp.hk/2021/05/15/screen%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/">
+<link rel="canonical" href="http://h300579.vicp.hk/2023/03/24/QByteArray%E7%9B%B8%E5%85%B3/">
 
 
 <script id="page-configurations">
@@ -47,7 +47,7 @@
   };
 </script>
 
-  <title>screen使用方法 | h300579的Hexo博客</title>
+  <title>QByteArray 的使用方法与技巧 | h300579的Hexo博客</title>
   
 
 
@@ -181,7 +181,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="cn">
-    <link itemprop="mainEntityOfPage" href="http://h300579.vicp.hk/2021/05/15/screen%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/">
+    <link itemprop="mainEntityOfPage" href="http://h300579.vicp.hk/2023/03/24/QByteArray%E7%9B%B8%E5%85%B3/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="http://q2.qlogo.cn/headimg_dl?dst_uin=1193787696&spec=4">
@@ -194,7 +194,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          screen使用方法
+          QByteArray 的使用方法与技巧
         </h1>
 
         <div class="post-meta">
@@ -204,14 +204,14 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2021-05-15 10:52:31" itemprop="dateCreated datePublished" datetime="2021-05-15T10:52:31+08:00">2021-05-15</time>
+              <time title="Created: 2023-03-24 16:38:37" itemprop="dateCreated datePublished" datetime="2023-03-24T16:38:37+08:00">2023-03-24</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-06-16 17:13:03" itemprop="dateModified" datetime="2021-06-16T17:13:03+08:00">2021-06-16</time>
+                <time title="Modified: 2022-02-14 18:05:11" itemprop="dateModified" datetime="2022-02-14T18:05:11+08:00">2022-02-14</time>
               </span>
 
           
@@ -225,14 +225,46 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>创建：screen -S ###<br><br></p>
-<span id="more"></span>
+        <p>最近做了个芯片烧录的上位机，因为功能设计到串口连续数据读取打包解析等内容，需要用到 QByteArray，且存着原始二进制数据。关于 QByteArray 的详细介绍，有空可以阅览一下 Qt 的 help，这里记录下常用的相关操作，方便使用查阅用法。</p>
+<h2 id="访问与赋值"><a href="#访问与赋值" class="headerlink" title="访问与赋值"></a>访问与赋值</h2><p>访问数据有四种方式， [] at() data[] constData[]，其中 [] 和 at 为可读可写，at 和 constData[] 为只读，因此访问效率最高。</p>
+<h2 id="在末尾追加字符数据"><a href="#在末尾追加字符数据" class="headerlink" title="在末尾追加字符数据"></a>在末尾追加字符数据</h2><pre class="language-none"><code class="language-none">QByteArray a(&quot;free&quot;);
+QByteArray b(&quot;dom&quot;);
+a.append(b);</code></pre>
+<p>还有 a+=b，听导师说这样会有拼接遗漏数据的可能？<br>还有 memcpy 拷贝的方法，虽然我没试成功过。  </p>
+<h2 id="查找某个字符的位置"><a href="#查找某个字符的位置" class="headerlink" title="查找某个字符的位置"></a>查找某个字符的位置</h2><p>indexOf，返回对应数字的第一个位置。  </p>
+<pre class="language-none"><code class="language-none">QByteArray a(&quot;abcd&quot;);
+int c &#x3D; a.indexOf(&#39;b&#39;);</code></pre>
+<h2 id="从左向右截取字符串"><a href="#从左向右截取字符串" class="headerlink" title="从左向右截取字符串"></a>从左向右截取字符串</h2><pre class="language-none"><code class="language-none">QByteArray a(&quot;pineapple&quot;);
+QByteArray b &#x3D; a.left(4);
+b &#x3D; &quot;pine&quot;;</code></pre>
+<h2 id="从右向左截取字符串"><a href="#从右向左截取字符串" class="headerlink" title="从右向左截取字符串"></a>从右向左截取字符串</h2><pre class="language-none"><code class="language-none">QByteArray a(&quot;pineapple&quot;);
+QByteArray b &#x3D; a.right(5);
+b &#x3D; &quot;apple&quot;;</code></pre>
 
-<p>查看有多少会话：screen -ls  </p>
-<p>恢复：screen -r ###  </p>
-<p>如果不能恢复：先screen -d ###  </p>
-<p>再screen -r ###  </p>
-<p>删除 screen -S ### -X quit  </p>
+<h2 id="截取部分字符串"><a href="#截取部分字符串" class="headerlink" title="截取部分字符串"></a>截取部分字符串</h2><pre class="language-none"><code class="language-none">QByteArray a(&quot;hello world&quot;);
+QByteArray b &#x3D; a.mid(6,3);  &#x2F;&#x2F;第一个参数代表从哪里开始，0对应h，5对应空格，第二个参数代表开始后多少长度
+b &#x3D; &quot;wor&quot;;
+QByteArray c &#x3D; a.mid(6);    &#x2F;&#x2F;一个参数就只代表从哪里开始，截取剩下所有内容。
+c &#x3D; &quot;world&quot;;</code></pre>
+
+<h2 id="删除某段字符"><a href="#删除某段字符" class="headerlink" title="删除某段字符"></a>删除某段字符</h2><pre class="language-none"><code class="language-none">QByteArray a(&quot;hello world);
+a.remove(6,3);
+a &#x3D; &quot;hello ld&quot;;</code></pre>
+<p><text class="color:red;"> 这个讲道理和截取左右字符串是不是互补关系呢？如果是的话效率是一样的吗？有待观察验证。</text></p>
+<h2 id="指定位置插入字符串"><a href="#指定位置插入字符串" class="headerlink" title="指定位置插入字符串"></a>指定位置插入字符串</h2><pre class="language-none"><code class="language-none">QByteArray a(&quot;helloworld&quot;);
+a.insert(5,QByteArray(&quot; &quot;));
+a &#x3D; &quot;hello world&quot;;</code></pre>
+
+<h2 id="字符替换"><a href="#字符替换" class="headerlink" title="字符替换"></a>字符替换</h2><pre class="language-none"><code class="language-none">QByteArray a(&quot;GoodBye world&quot;);
+QByteArray b(&quot;hello&quot;);
+a.replace(0, 7, b); &#x2F;&#x2F; 0表示从第0个字符开始，7表示替换长度为7的内容，b表示替换的内容，长度可以不同。
+a &#x3D; hello world;</code></pre>
+<h2 id="Leader教的转换方法"><a href="#Leader教的转换方法" class="headerlink" title="Leader教的转换方法"></a>Leader教的转换方法</h2><pre class="language-none"><code class="language-none">QByteArray a &#x3D; QSerialPort.readAll();
+QString tt &#x3D; a.toHex();
+QByteArray tt2 &#x3D; QByteArray().fromHex(tt.toLatin1());</code></pre>
+<p>这里需要好好学习下各个函数的作用，列出来，不然直接copy拿去用就好。  </p>
+<hr>
+<h2 id="参考资料："><a href="#参考资料：" class="headerlink" title="参考资料："></a>参考资料：</h2><p>QByteArray常见使用方式：<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_38931060/article/details/117992884?spm=1001.2014.3001.5502">https://blog.csdn.net/weixin_38931060/article/details/117992884?spm=1001.2014.3001.5502</a><br>QT中常见QByteArray，QString，char,10进制，16进制之间转换：<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_38931060/article/details/117994816?spm=1001.2014.3001.5502">https://blog.csdn.net/weixin_38931060/article/details/117994816?spm=1001.2014.3001.5502</a></p>
 
     </div>
 
@@ -242,8 +274,8 @@
 
       <footer class="post-footer">
           <div class="post-tags">
+              <a href="/tags/Qt/" rel="tag"># Qt</a>
               <a href="/tags/%E6%8A%80%E6%9C%AF/" rel="tag"># 技术</a>
-              <a href="/tags/screen/" rel="tag"># screen</a>
           </div>
 
         
@@ -252,12 +284,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2021/04/26/%E5%85%AC%E4%B8%BB%E8%BF%9E%E6%8E%A5%E6%89%93%E8%BD%B4%E5%99%A8/" rel="prev" title="公主连接打轴器探索">
-      <i class="fa fa-chevron-left"></i> 公主连接打轴器探索
+    <a href="/2021/06/16/markdown%E5%AD%A6%E4%B9%A0/" rel="prev" title="markdown学习笔记">
+      <i class="fa fa-chevron-left"></i> markdown学习笔记
     </a></div>
       <div class="post-nav-item">
-    <a href="/2021/06/16/markdown%E5%AD%A6%E4%B9%A0/" rel="next" title="markdown学习笔记">
-      markdown学习笔记 <i class="fa fa-chevron-right"></i>
+    <a href="/2023/03/24/b%E7%AB%99%E8%A7%86%E9%A2%91%E5%8E%8B%E5%88%B6%E4%BF%A1%E6%81%AF%E7%9B%B8%E5%85%B3/" rel="next" title="b站视频压制">
+      b站视频压制 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -317,6 +349,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BF%E9%97%AE%E4%B8%8E%E8%B5%8B%E5%80%BC"><span class="nav-number">1.</span> <span class="nav-text">访问与赋值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%A8%E6%9C%AB%E5%B0%BE%E8%BF%BD%E5%8A%A0%E5%AD%97%E7%AC%A6%E6%95%B0%E6%8D%AE"><span class="nav-number">2.</span> <span class="nav-text">在末尾追加字符数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E6%89%BE%E6%9F%90%E4%B8%AA%E5%AD%97%E7%AC%A6%E7%9A%84%E4%BD%8D%E7%BD%AE"><span class="nav-number">3.</span> <span class="nav-text">查找某个字符的位置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%8E%E5%B7%A6%E5%90%91%E5%8F%B3%E6%88%AA%E5%8F%96%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-number">4.</span> <span class="nav-text">从左向右截取字符串</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%8E%E5%8F%B3%E5%90%91%E5%B7%A6%E6%88%AA%E5%8F%96%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-number">5.</span> <span class="nav-text">从右向左截取字符串</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%88%AA%E5%8F%96%E9%83%A8%E5%88%86%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-number">6.</span> <span class="nav-text">截取部分字符串</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E6%9F%90%E6%AE%B5%E5%AD%97%E7%AC%A6"><span class="nav-number">7.</span> <span class="nav-text">删除某段字符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%87%E5%AE%9A%E4%BD%8D%E7%BD%AE%E6%8F%92%E5%85%A5%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-number">8.</span> <span class="nav-text">指定位置插入字符串</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E6%9B%BF%E6%8D%A2"><span class="nav-number">9.</span> <span class="nav-text">字符替换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Leader%E6%95%99%E7%9A%84%E8%BD%AC%E6%8D%A2%E6%96%B9%E6%B3%95"><span class="nav-number">10.</span> <span class="nav-text">Leader教的转换方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99%EF%BC%9A"><span class="nav-number">11.</span> <span class="nav-text">参考资料：</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

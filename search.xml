@@ -4,6 +4,48 @@
   
     
     <entry>
+      <title>b站视频压制</title>
+      <link href="2023/03/24/b%E7%AB%99%E8%A7%86%E9%A2%91%E5%8E%8B%E5%88%B6%E4%BF%A1%E6%81%AF%E7%9B%B8%E5%85%B3/"/>
+      <url>2023/03/24/b%E7%AB%99%E8%A7%86%E9%A2%91%E5%8E%8B%E5%88%B6%E4%BF%A1%E6%81%AF%E7%9B%B8%E5%85%B3/</url>
+      
+        <content type="html"><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>这是一篇关于如何获取b站最优画质的上传探索文章。<br>b站曾经还是小破站的时候，需要用渣浪的服务器来传视频，那时候为了获取极佳的画质，就有了留后黑来降低平均码率获得高画质的方法。<br>后来啊b富有了，有一段视频码率很夸张的时代，可以说基本不用考虑二压。<br>然后啊b又穷了，二压线又又又来了！  </p><h1 id="啊b二压门槛"><a href="#啊b二压门槛" class="headerlink" title="啊b二压门槛"></a>啊b二压门槛</h1><p>根据b站up 我真的没有天分丶 的 <a href="https://www.bilibili.com/video/BV1ne411G7qy/?vd_source=f30bfaa2341a62352679272ad1d09fb7">BV1ne411G7qy</a> 统计数据，现在啊b的二压线为：  </p><p>1080P高清：2600Kbps<br>1080P60帧：5200Kbps<br>4K超清：18500Kbps  </p><p>鉴于啊b现在没有2k分辨率档位，为了获取更高的码率上限，都可以将1080p和2k拉到4k分辨率来骗高码率。<br>这里还有高阶技巧就是用最短边分辨率骗假4k。<br>详见 其棱无也 的 <a href="https://www.bilibili.com/video/BV1q44y127rB/?spm_id_from=333.788.recommend_more_video.1&vd_source=f30bfaa2341a62352679272ad1d09fb7">BV1q44y127rB</a>，有详细介绍。  </p><h1 id="压制软件对比"><a href="#压制软件对比" class="headerlink" title="压制软件对比"></a>压制软件对比</h1><p>博主浅薄的字幕组生涯解除过几款视频压制软件，分别是 大众无脑之王——小丸工具箱，开始追求一定效率的——ShanaEncoder，追求无脑显卡压制的——消极压制，参数众多看的头大的——MediaCoder ，效率最高的开源命令行软件——FFMPEG。<br>其余没有提到的就不管了，顺便把那个说格式工厂的叉出去。</p><p>下为测试视频压制记录与对比：<br>原视频：<br>分辨率 2k<br>码率   50Mbps<br>时长   10min  </p><p>小丸工具箱压制：<br>参数设置：分辨率 4k，码率18Mbps，2-pass，耗时 1h10m<br>上传结果：<a href="https://www.bilibili.com/video/BV1YY4y1Q7YH/?spm_id_from=333.880.my_history.page.click&vd_source=f30bfaa2341a62352679272ad1d09fb7">BV1YY4y1Q7YH</a></p><p>Shana压制：  </p><p>消极压制：<br>耗时：16:30 ~ 16:36，5~6分钟  </p><p>FFMPEG：  </p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> 技术 </tag>
+            
+            <tag> 视频压制 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>QByteArray 的使用方法与技巧</title>
+      <link href="2023/03/24/QByteArray%E7%9B%B8%E5%85%B3/"/>
+      <url>2023/03/24/QByteArray%E7%9B%B8%E5%85%B3/</url>
+      
+        <content type="html"><![CDATA[<p>最近做了个芯片烧录的上位机，因为功能设计到串口连续数据读取打包解析等内容，需要用到 QByteArray，且存着原始二进制数据。关于 QByteArray 的详细介绍，有空可以阅览一下 Qt 的 help，这里记录下常用的相关操作，方便使用查阅用法。</p><h2 id="访问与赋值"><a href="#访问与赋值" class="headerlink" title="访问与赋值"></a>访问与赋值</h2><p>访问数据有四种方式， [] at() data[] constData[]，其中 [] 和 at 为可读可写，at 和 constData[] 为只读，因此访问效率最高。</p><h2 id="在末尾追加字符数据"><a href="#在末尾追加字符数据" class="headerlink" title="在末尾追加字符数据"></a>在末尾追加字符数据</h2><pre class="language-none"><code class="language-none">QByteArray a(&quot;free&quot;);QByteArray b(&quot;dom&quot;);a.append(b);</code></pre><p>还有 a+=b，听导师说这样会有拼接遗漏数据的可能？<br>还有 memcpy 拷贝的方法，虽然我没试成功过。  </p><h2 id="查找某个字符的位置"><a href="#查找某个字符的位置" class="headerlink" title="查找某个字符的位置"></a>查找某个字符的位置</h2><p>indexOf，返回对应数字的第一个位置。  </p><pre class="language-none"><code class="language-none">QByteArray a(&quot;abcd&quot;);int c &#x3D; a.indexOf(&#39;b&#39;);</code></pre><h2 id="从左向右截取字符串"><a href="#从左向右截取字符串" class="headerlink" title="从左向右截取字符串"></a>从左向右截取字符串</h2><pre class="language-none"><code class="language-none">QByteArray a(&quot;pineapple&quot;);QByteArray b &#x3D; a.left(4);b &#x3D; &quot;pine&quot;;</code></pre><h2 id="从右向左截取字符串"><a href="#从右向左截取字符串" class="headerlink" title="从右向左截取字符串"></a>从右向左截取字符串</h2><pre class="language-none"><code class="language-none">QByteArray a(&quot;pineapple&quot;);QByteArray b &#x3D; a.right(5);b &#x3D; &quot;apple&quot;;</code></pre><h2 id="截取部分字符串"><a href="#截取部分字符串" class="headerlink" title="截取部分字符串"></a>截取部分字符串</h2><pre class="language-none"><code class="language-none">QByteArray a(&quot;hello world&quot;);QByteArray b &#x3D; a.mid(6,3);  &#x2F;&#x2F;第一个参数代表从哪里开始，0对应h，5对应空格，第二个参数代表开始后多少长度b &#x3D; &quot;wor&quot;;QByteArray c &#x3D; a.mid(6);    &#x2F;&#x2F;一个参数就只代表从哪里开始，截取剩下所有内容。c &#x3D; &quot;world&quot;;</code></pre><h2 id="删除某段字符"><a href="#删除某段字符" class="headerlink" title="删除某段字符"></a>删除某段字符</h2><pre class="language-none"><code class="language-none">QByteArray a(&quot;hello world);a.remove(6,3);a &#x3D; &quot;hello ld&quot;;</code></pre><p><text class="color:red;"> 这个讲道理和截取左右字符串是不是互补关系呢？如果是的话效率是一样的吗？有待观察验证。</text></p><h2 id="指定位置插入字符串"><a href="#指定位置插入字符串" class="headerlink" title="指定位置插入字符串"></a>指定位置插入字符串</h2><pre class="language-none"><code class="language-none">QByteArray a(&quot;helloworld&quot;);a.insert(5,QByteArray(&quot; &quot;));a &#x3D; &quot;hello world&quot;;</code></pre><h2 id="字符替换"><a href="#字符替换" class="headerlink" title="字符替换"></a>字符替换</h2><pre class="language-none"><code class="language-none">QByteArray a(&quot;GoodBye world&quot;);QByteArray b(&quot;hello&quot;);a.replace(0, 7, b); &#x2F;&#x2F; 0表示从第0个字符开始，7表示替换长度为7的内容，b表示替换的内容，长度可以不同。a &#x3D; hello world;</code></pre><h2 id="Leader教的转换方法"><a href="#Leader教的转换方法" class="headerlink" title="Leader教的转换方法"></a>Leader教的转换方法</h2><pre class="language-none"><code class="language-none">QByteArray a &#x3D; QSerialPort.readAll();QString tt &#x3D; a.toHex();QByteArray tt2 &#x3D; QByteArray().fromHex(tt.toLatin1());</code></pre><p>这里需要好好学习下各个函数的作用，列出来，不然直接copy拿去用就好。  </p><hr><h2 id="参考资料："><a href="#参考资料：" class="headerlink" title="参考资料："></a>参考资料：</h2><p>QByteArray常见使用方式：<a href="https://blog.csdn.net/weixin_38931060/article/details/117992884?spm=1001.2014.3001.5502">https://blog.csdn.net/weixin_38931060/article/details/117992884?spm=1001.2014.3001.5502</a><br>QT中常见QByteArray，QString，char,10进制，16进制之间转换：<a href="https://blog.csdn.net/weixin_38931060/article/details/117994816?spm=1001.2014.3001.5502">https://blog.csdn.net/weixin_38931060/article/details/117994816?spm=1001.2014.3001.5502</a></p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> Qt </tag>
+            
+            <tag> 技术 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>markdown学习笔记</title>
       <link href="2021/06/16/markdown%E5%AD%A6%E4%B9%A0/"/>
       <url>2021/06/16/markdown%E5%AD%A6%E4%B9%A0/</url>
@@ -35,9 +77,9 @@
       
         <tags>
             
-            <tag> screen </tag>
-            
             <tag> 技术 </tag>
+            
+            <tag> screen </tag>
             
         </tags>
       

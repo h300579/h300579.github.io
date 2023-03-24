@@ -174,7 +174,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="cn">
-    <link itemprop="mainEntityOfPage" href="http://h300579.vicp.hk/2021/05/15/screen%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/">
+    <link itemprop="mainEntityOfPage" href="http://h300579.vicp.hk/2023/03/24/QByteArray%E7%9B%B8%E5%85%B3/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="http://q2.qlogo.cn/headimg_dl?dst_uin=1193787696&spec=4">
@@ -188,7 +188,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/05/15/screen%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/" class="post-title-link" itemprop="url">screen使用方法</a>
+            <a href="/2023/03/24/QByteArray%E7%9B%B8%E5%85%B3/" class="post-title-link" itemprop="url">QByteArray 的使用方法与技巧</a>
         </h2>
 
         <div class="post-meta">
@@ -198,14 +198,14 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2021-05-15 10:52:31" itemprop="dateCreated datePublished" datetime="2021-05-15T10:52:31+08:00">2021-05-15</time>
+              <time title="Created: 2023-03-24 16:38:37" itemprop="dateCreated datePublished" datetime="2023-03-24T16:38:37+08:00">2023-03-24</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-06-16 17:13:03" itemprop="dateModified" datetime="2021-06-16T17:13:03+08:00">2021-06-16</time>
+                <time title="Modified: 2022-02-14 18:05:11" itemprop="dateModified" datetime="2022-02-14T18:05:11+08:00">2022-02-14</time>
               </span>
 
           
@@ -219,15 +219,47 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>创建：screen -S ###<br><br></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/05/15/screen%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+          <p>最近做了个芯片烧录的上位机，因为功能设计到串口连续数据读取打包解析等内容，需要用到 QByteArray，且存着原始二进制数据。关于 QByteArray 的详细介绍，有空可以阅览一下 Qt 的 help，这里记录下常用的相关操作，方便使用查阅用法。</p>
+<h2 id="访问与赋值"><a href="#访问与赋值" class="headerlink" title="访问与赋值"></a>访问与赋值</h2><p>访问数据有四种方式， [] at() data[] constData[]，其中 [] 和 at 为可读可写，at 和 constData[] 为只读，因此访问效率最高。</p>
+<h2 id="在末尾追加字符数据"><a href="#在末尾追加字符数据" class="headerlink" title="在末尾追加字符数据"></a>在末尾追加字符数据</h2><pre class="language-none"><code class="language-none">QByteArray a(&quot;free&quot;);
+QByteArray b(&quot;dom&quot;);
+a.append(b);</code></pre>
+<p>还有 a+=b，听导师说这样会有拼接遗漏数据的可能？<br>还有 memcpy 拷贝的方法，虽然我没试成功过。  </p>
+<h2 id="查找某个字符的位置"><a href="#查找某个字符的位置" class="headerlink" title="查找某个字符的位置"></a>查找某个字符的位置</h2><p>indexOf，返回对应数字的第一个位置。  </p>
+<pre class="language-none"><code class="language-none">QByteArray a(&quot;abcd&quot;);
+int c &#x3D; a.indexOf(&#39;b&#39;);</code></pre>
+<h2 id="从左向右截取字符串"><a href="#从左向右截取字符串" class="headerlink" title="从左向右截取字符串"></a>从左向右截取字符串</h2><pre class="language-none"><code class="language-none">QByteArray a(&quot;pineapple&quot;);
+QByteArray b &#x3D; a.left(4);
+b &#x3D; &quot;pine&quot;;</code></pre>
+<h2 id="从右向左截取字符串"><a href="#从右向左截取字符串" class="headerlink" title="从右向左截取字符串"></a>从右向左截取字符串</h2><pre class="language-none"><code class="language-none">QByteArray a(&quot;pineapple&quot;);
+QByteArray b &#x3D; a.right(5);
+b &#x3D; &quot;apple&quot;;</code></pre>
+
+<h2 id="截取部分字符串"><a href="#截取部分字符串" class="headerlink" title="截取部分字符串"></a>截取部分字符串</h2><pre class="language-none"><code class="language-none">QByteArray a(&quot;hello world&quot;);
+QByteArray b &#x3D; a.mid(6,3);  &#x2F;&#x2F;第一个参数代表从哪里开始，0对应h，5对应空格，第二个参数代表开始后多少长度
+b &#x3D; &quot;wor&quot;;
+QByteArray c &#x3D; a.mid(6);    &#x2F;&#x2F;一个参数就只代表从哪里开始，截取剩下所有内容。
+c &#x3D; &quot;world&quot;;</code></pre>
+
+<h2 id="删除某段字符"><a href="#删除某段字符" class="headerlink" title="删除某段字符"></a>删除某段字符</h2><pre class="language-none"><code class="language-none">QByteArray a(&quot;hello world);
+a.remove(6,3);
+a &#x3D; &quot;hello ld&quot;;</code></pre>
+<p><text class="color:red;"> 这个讲道理和截取左右字符串是不是互补关系呢？如果是的话效率是一样的吗？有待观察验证。</text></p>
+<h2 id="指定位置插入字符串"><a href="#指定位置插入字符串" class="headerlink" title="指定位置插入字符串"></a>指定位置插入字符串</h2><pre class="language-none"><code class="language-none">QByteArray a(&quot;helloworld&quot;);
+a.insert(5,QByteArray(&quot; &quot;));
+a &#x3D; &quot;hello world&quot;;</code></pre>
+
+<h2 id="字符替换"><a href="#字符替换" class="headerlink" title="字符替换"></a>字符替换</h2><pre class="language-none"><code class="language-none">QByteArray a(&quot;GoodBye world&quot;);
+QByteArray b(&quot;hello&quot;);
+a.replace(0, 7, b); &#x2F;&#x2F; 0表示从第0个字符开始，7表示替换长度为7的内容，b表示替换的内容，长度可以不同。
+a &#x3D; hello world;</code></pre>
+<h2 id="Leader教的转换方法"><a href="#Leader教的转换方法" class="headerlink" title="Leader教的转换方法"></a>Leader教的转换方法</h2><pre class="language-none"><code class="language-none">QByteArray a &#x3D; QSerialPort.readAll();
+QString tt &#x3D; a.toHex();
+QByteArray tt2 &#x3D; QByteArray().fromHex(tt.toLatin1());</code></pre>
+<p>这里需要好好学习下各个函数的作用，列出来，不然直接copy拿去用就好。  </p>
+<hr>
+<h2 id="参考资料："><a href="#参考资料：" class="headerlink" title="参考资料："></a>参考资料：</h2><p>QByteArray常见使用方式：<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_38931060/article/details/117992884?spm=1001.2014.3001.5502">https://blog.csdn.net/weixin_38931060/article/details/117992884?spm=1001.2014.3001.5502</a><br>QT中常见QByteArray，QString，char,10进制，16进制之间转换：<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_38931060/article/details/117994816?spm=1001.2014.3001.5502">https://blog.csdn.net/weixin_38931060/article/details/117994816?spm=1001.2014.3001.5502</a></p>
+
       
     </div>
 
@@ -245,7 +277,7 @@
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
   </nav>
 
 
@@ -313,12 +345,12 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-count">8</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-count">13</span>
         <span class="site-state-item-name">tags</span>
       </div>
   </nav>
