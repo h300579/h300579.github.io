@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/version.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/version.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/version.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"h300579.vicp.hk","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="脚本语言是什么">
+<meta property="og:type" content="article">
+<meta property="og:title" content="编译技术的应用-脚本语言">
+<meta property="og:url" content="http://h300579.vicp.hk/2021/04/24/%E7%BC%96%E8%AF%91%E6%8A%80%E6%9C%AF%E7%9A%84%E5%BA%94%E7%94%A8-%E8%84%9A%E6%9C%AC%E8%AF%AD%E8%A8%80/index.html">
+<meta property="og:site_name" content="h300579的Hexo博客">
+<meta property="og:description" content="脚本语言是什么">
+<meta property="og:locale">
+<meta property="article:published_time" content="2021-04-24T09:29:12.000Z">
+<meta property="article:modified_time" content="2021-06-15T13:35:52.000Z">
+<meta property="article:author" content="h300579">
+<meta property="article:tag" content="编译技术">
+<meta property="article:tag" content="脚本语言">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://h300579.vicp.hk/2021/04/24/%E7%BC%96%E8%AF%91%E6%8A%80%E6%9C%AF%E7%9A%84%E5%BA%94%E7%94%A8-%E8%84%9A%E6%9C%AC%E8%AF%AD%E8%A8%80/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'cn'
+  };
+</script>
+
+  <title>编译技术的应用-脚本语言 | h300579的Hexo博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">h300579的Hexo博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="cn">
+    <link itemprop="mainEntityOfPage" href="http://h300579.vicp.hk/2021/04/24/%E7%BC%96%E8%AF%91%E6%8A%80%E6%9C%AF%E7%9A%84%E5%BA%94%E7%94%A8-%E8%84%9A%E6%9C%AC%E8%AF%AD%E8%A8%80/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://q2.qlogo.cn/headimg_dl?dst_uin=1193787696&spec=4">
+      <meta itemprop="name" content="h300579">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="h300579的Hexo博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          编译技术的应用-脚本语言
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-04-24 17:29:12" itemprop="dateCreated datePublished" datetime="2021-04-24T17:29:12+08:00">2021-04-24</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-06-15 21:35:52" itemprop="dateModified" datetime="2021-06-15T21:35:52+08:00">2021-06-15</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="脚本语言是什么"><a href="#脚本语言是什么" class="headerlink" title="脚本语言是什么"></a>脚本语言是什么</h1><span id="more"></span>
+<p>脚本语言是为了缩短传统的“编写、编译、链接、运行”过程而创建的计算机编程语言。<br>早期的脚本语言经常被称为批处理语言或作业控制语言。<br>一个脚本通常是解释运行而非编译。<br>脚本语言通常都有简单、易学、易用的特性，目的就是希望能让程序员快速完成程序的编写工作。<br><br><br><em>编程语言分为编译型语言和解释型语言，脚本语言就属于解释型语言。</em></p>
+<br>
+脚本语言是一种计算机程序语言，因此也能让开发者藉以编写出让电脑听命行事的程序。  
+以简单的方式快速完成某些复杂的事情通常是创造脚本语言的重要原则，  
+基于这项原则，使得脚本语言通常比C语言、C++语言或 Java之类的系统编程语言要简单容易，  
+也让脚本语言另有一些属于脚本语言的特性：  
+
+<blockquote>
+<p>语法和结构通常比较简单<br>学习和使用通常比较简单<br>通常以容易修改程序的“解释”作为运行方式，而不需要“编译”<br>程序的开发产能优于运行性能</p>
+</blockquote>
+<p>计算机语言是为了各种目的和任务而开发的，<br>一个常见任务就是把各种不同的已有组件连接起来以完成相关任务。<br>大多脚本语言共性是：  </p>
+<blockquote>
+<p>良好的快速开发，<br>有效率的执行，<br>解释而非编译执行，<br>和其它语言编写的程序组件之间通信功能很强大。</p>
+</blockquote>
+<p>许多脚本语言用来执行一次性任务，尤其是系统管理方面。<br>它可以把服务组件粘合起来，因此被广泛用于GUI创建或者命令行，<br>操作系统通常提供一些默认的脚本语言，即通常所谓shell脚本语言。<br><br><br>脚本通常以文本（如ASCII）保存，只在被调用时进行解释或编译。<br>测试大型项目中经常把脚本和其它低级编程语言一起使用，各自发挥优势解决特定问题。<br>脚本经常用于设计互动通信，它有许多可以单独执行的命令，<br>可以做很高级的操作，（如在传统的Unix shell（sh）中，大多操作就是程序本身。）<br><br><br>这些高级命令简化了代码编写过程。诸如内存自动管理和溢出检查等性能问题可以不用考虑。<br>在更低级或非脚本语言中，内存及变量管理和数据结构等耗费人工，为解决一个给定问题需要大量代码，<br>当然这样能够获得更为细致的控制和优化。脚本缺少优化程序以提速或者降低内存的伸缩性。<br><br><br>综上所述，脚本编程速度更快，且脚本文件明显小于如同类C程序文件。<br>这种灵活性是以执行效率为代价的。<br>脚本通常是解释执行的，速度可能很慢，且运行时更耗内存。<br>在很多案例中，如编写一些数十行的小脚本，<br>它所带来的编写优势就远远超过了运行时的劣势，尤其是在当前程序员工资趋高和硬件成本趋低时。<br><br>  </p>
+<p>linux默认的命令行Bash用的指令就是脚本语言的一种。<br>我们常用的Python由于其特性也分类为脚本语言的一种。<br>本人有幸接触过Lua语言，lua也是轻量小巧的脚本语言。<del>应该会有lua相关的博文</del></p>
+<h1 id="解释器"><a href="#解释器" class="headerlink" title="解释器"></a>解释器</h1><p>既然脚本语言是解释型语言，就必须来讨论一下解释器。就定义上虽然划分了编译型语言和解释型语言，有着各自独有的编译器和解释器，但它们未必就是相互独立的。</p>
+<p>解释器执行程序的方法有：</p>
+<blockquote>
+<p>1.直接执行高级编程言（如Shell内建的编译器）<br>2.转换高级编程语言到更有效率的字节码（Bytecode），并执行字节码<br>3.用解释器包含的编译器对高级语言进行编译，并指示中央处理器执行编译后的程序（例如：JIT）</p>
+</blockquote>
+<p>其中3的——<em>用解释器包含的编译器对高级语言进行编译，并指示中央处理器执行编译后的程序</em>——这句话我觉得很有意思，所以解释器中包含编译器，所谓的读取一句执行一句其实源代码输入后结果的差别，如果出来的是另一种代码，可执行文件，那就是编译器，直接输出源码执行后的结果，那就是解释器。<br>不能因为名字定义就错误认为编译器一定没有编译的过程。<br>比如说可以写一个C语言的解释器，效果是对C语言进行编译，然后运行生成的可执行文件，再将得到的结果直接输出，那么这就是一个定义上的解释器。</p>
+<p>Perl，Python，MATLAB，与Ruby是属于第二种方法，而UCSD Pascal则是属于第三种方式。<br>在翻译的过程中，这组高级语言所写成的程序仍然维持在源代码的格式（或某种中继语言的格式），而程序本身所指涉的动作或行为则由解释器来表现。</p>
+<p>在解释器上运行程序比直接运行编译过的代码来得慢，是因为解释器每次都必须去分析并翻译它所运行到的程序行，而编译过的程序就只是直接运行。<br>这个在运行时的分析被称为”解释式的成本”。<br>在解释器中，变量的访问也是比较慢的，因为每次要访问变量的时候它都必须找出该变量实际存储的位置，而不像编译过的程序在编译的时候就决定好了变量的位置了。</p>
+<h1 id="哪些是编译原理相关的技术"><a href="#哪些是编译原理相关的技术" class="headerlink" title="哪些是编译原理相关的技术"></a>哪些是编译原理相关的技术</h1><p>那么脚本语言中究竟涉及到了哪些编译相关的技术呢？<br>可以确定的是，通过上文的描述，我们可以理解，解释型语言和编译型语言差别在输出对象上，<br>实际执行中，都逃不开词法分析器、语法分析器和语义分析。<br>由于编译型语言和解释型语言的代码执行顺序不同，所以当源码中有错误时，<br>编译型语言会直接在编译过程报错，并不会生成目标代码程序，<br>而解释型语言则会将错误之前的代码段全部执行完毕，然后到有问题的语句再报错。<br>比如：  </p>
+<pre class="language-bash" data-language="bash"><code class="language-bash"><span class="token builtin class-name">echo</span> hello
+<span class="token keyword">for</span><span class="token variable"><span class="token punctuation">((</span>i<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">;</span>i<span class="token operator">&lt;=</span><span class="token number">10</span><span class="token punctuation">;</span>i<span class="token operator">++</span><span class="token punctuation">))</span></span><span class="token punctuation">;</span> <span class="token keyword">do</span>
+	<span class="token builtin class-name">echo</span> hello
+	<span class="token keyword">for</span><span class="token variable"><span class="token punctuation">((</span>i<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">;</span>i<span class="token operator">&lt;=</span><span class="token number">10</span><span class="token punctuation">;</span>i<span class="token operator">++</span><span class="token punctuation">))</span></span><span class="token punctuation">;</span>
+		<span class="token builtin class-name">echo</span> hello
+	<span class="token keyword">done</span>
+<span class="token keyword">done</span></code></pre>
+<p>其中第二个for循环少了do，所以程序会输出一次hello，然后报错。<br>每种解释型语言处理方式不同，但是可以猜测，<br>解释型语言不会逐个“物理行”解析，但是“按命令”解析执行是可以的，<br>比如python在交互模式下就是你输入一行，编译并执行这一行，<br>但是你如果输入是if、while的话，它会让你将代码块都输入完整后才将这一段作为一个完整的命令  </p>
+<h1 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h1><p><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%84%9A%E6%9C%AC%E8%AF%AD%E8%A8%80">脚本语言wiki</a><br><a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E8%A7%A3%E9%87%8A%E5%99%A8/10418965">解释器百度百科</a><br><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/19608553">知乎：Java 是编译型语言还是解释型语言？</a>中的<a target="_blank" rel="noopener" href="https://www.zhihu.com/people/rednaxelafx">RednaxelaFX</a>的已失效博文，但是被路人备份了<a target="_blank" rel="noopener" href="https://www.cnblogs.com/bozhang/articles/3115089.html">传送门</a><br><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/325210206/answer/691007867">知乎：python需要编译，为什么还把他叫做脚本语言？</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%BC%96%E8%AF%91%E6%8A%80%E6%9C%AF/" rel="tag"># 编译技术</a>
+              <a href="/tags/%E8%84%9A%E6%9C%AC%E8%AF%AD%E8%A8%80/" rel="tag"># 脚本语言</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/04/22/blog%E6%90%AD%E5%BB%BA%E9%97%AE%E9%A2%98%E6%B1%87%E6%80%BB/" rel="prev" title="HEXO blog搭建问题汇总">
+      <i class="fa fa-chevron-left"></i> HEXO blog搭建问题汇总
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/04/26/%E5%85%AC%E4%B8%BB%E8%BF%9E%E6%8E%A5%E6%89%93%E8%BD%B4%E5%99%A8/" rel="next" title="公主连接打轴器探索">
+      公主连接打轴器探索 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%84%9A%E6%9C%AC%E8%AF%AD%E8%A8%80%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-number">1.</span> <span class="nav-text">脚本语言是什么</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A7%A3%E9%87%8A%E5%99%A8"><span class="nav-number">2.</span> <span class="nav-text">解释器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%93%AA%E4%BA%9B%E6%98%AF%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86%E7%9B%B8%E5%85%B3%E7%9A%84%E6%8A%80%E6%9C%AF"><span class="nav-number">3.</span> <span class="nav-text">哪些是编译原理相关的技术</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BC%95%E7%94%A8"><span class="nav-number">4.</span> <span class="nav-text">引用</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="h300579"
+      src="http://q2.qlogo.cn/headimg_dl?dst_uin=1193787696&spec=4">
+  <p class="site-author-name" itemprop="name">h300579</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/1819132" title="Bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;1819132" rel="noopener" target="_blank"><i class="fas fa-tv fa-fw"></i>Bilibili</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">h300579</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

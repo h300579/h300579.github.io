@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/version.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/version.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/version.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"h300579.vicp.hk","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="关于在云服务器上通过centos7部署go-cqhttp 和 yobot">
+<meta property="og:type" content="article">
+<meta property="og:title" content="yobot部署攻略">
+<meta property="og:url" content="http://h300579.vicp.hk/2021/04/21/yobot%E9%83%A8%E7%BD%B2%E6%94%BB%E7%95%A5/index.html">
+<meta property="og:site_name" content="h300579的Hexo博客">
+<meta property="og:description" content="关于在云服务器上通过centos7部署go-cqhttp 和 yobot">
+<meta property="og:locale">
+<meta property="article:published_time" content="2021-04-21T06:48:47.000Z">
+<meta property="article:modified_time" content="2021-06-15T13:35:31.000Z">
+<meta property="article:author" content="h300579">
+<meta property="article:tag" content="教程">
+<meta property="article:tag" content="yobot">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://h300579.vicp.hk/2021/04/21/yobot%E9%83%A8%E7%BD%B2%E6%94%BB%E7%95%A5/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'cn'
+  };
+</script>
+
+  <title>yobot部署攻略 | h300579的Hexo博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">h300579的Hexo博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="cn">
+    <link itemprop="mainEntityOfPage" href="http://h300579.vicp.hk/2021/04/21/yobot%E9%83%A8%E7%BD%B2%E6%94%BB%E7%95%A5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="http://q2.qlogo.cn/headimg_dl?dst_uin=1193787696&spec=4">
+      <meta itemprop="name" content="h300579">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="h300579的Hexo博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          yobot部署攻略
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-04-21 14:48:47" itemprop="dateCreated datePublished" datetime="2021-04-21T14:48:47+08:00">2021-04-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-06-15 21:35:31" itemprop="dateModified" datetime="2021-06-15T21:35:31+08:00">2021-06-15</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="关于在云服务器上通过centos7部署go-cqhttp-和-yobot"><a href="#关于在云服务器上通过centos7部署go-cqhttp-和-yobot" class="headerlink" title="关于在云服务器上通过centos7部署go-cqhttp 和 yobot"></a>关于在云服务器上通过centos7部署go-cqhttp 和 yobot</h2><span id="more"></span>
+<p>前言：<br>yobot官方使用教程与安装教程<a target="_blank" rel="noopener" href="https://yobot.win/install/mirai/">点击这里</a></p>
+<p>博主自己在云服务器上搭建时遇到部分问题，解决后总结在本博文，希望对有需要的人起到帮助。<br>博主云服务器：腾讯云 centos7.6  阿里云 centos 8.3<br>记得要将服务器开启9222端口<br><br></p>
+<h1 id="yobot部分"><a href="#yobot部分" class="headerlink" title="yobot部分"></a>yobot部分</h1><p>安装依赖</p>
+<pre class="language-bash" data-language="bash"><code class="language-bash">yum <span class="token function">install</span> -y gcc python3 <span class="token function">screen</span> <span class="token function">wget</span></code></pre>
+<p>如果提示 unable to find a match : screen 就通过</p>
+<pre class="language-bash" data-language="bash"><code class="language-bash">yum <span class="token function">install</span> https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm</code></pre>
+<p>配置yum源<br>请使用 python3 -V 命令确认 python 版本，yobot 支持的 python 版本为 3.6 ~ 3.8</p>
+<p>使用终端复用器<br>这里我们用 screen 作为终端复用工具，<a href="http://h300579.vicp.hk/2021/05/15/screen%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/">详细用法</a><br><br><br>官方这里没有细说，大概用法就是 screen -s 新建一个窗口，每次用完窗口通过<kbd>Ctrl</kbd>+<kbd>A</kbd> <kbd>Ctrl</kbd>+<kbd>d</kbd>来使当前窗口detach，然后screen -ls来看已经detach的窗口，通过screen -r 名字或者id来恢复到目标窗口。由于yobot部署需要yobot+go-cqhttp两个软件，所以建议开启两个窗口，分别命名qqbot和miraiqq（可自行命名）<br><br><br>现在新建一个 screen 终端</p>
+<pre class="language-bash" data-language="bash"><code class="language-bash"><span class="token function">screen</span> -S qqbot</code></pre>
+<p>部署yobot</p>
+<pre class="language-bash" data-language="bash"><code class="language-bash"><span class="token function">mkdir</span> -p ~/qqbot/yobot
+<span class="token builtin class-name">cd</span> ~/qqbot/yobot
+
+<span class="token comment"># 下载源码，使用 stable 稳定版分支</span>
+<span class="token function">git</span> clone https://github.com/pcrbot/yobot.git -b stable
+</code></pre>
+<p>注意这里git指令多半会报错没有git  通过</p>
+<pre class="language-bash" data-language="bash"><code class="language-bash">yum <span class="token function">install</span> <span class="token function">git</span></code></pre>
+<p>来安装git使git可用  </p>
+<p>然后 git clone 在国内现在速度非常慢不够看，所以建议直接使用国内镜像，代码如下</p>
+<pre class="language-bash" data-language="bash"><code class="language-bash"><span class="token function">git</span> clone https://github.com.cnpmjs.org/pcrbot/yobot.git</code></pre>
+<p>clone完成后继续</p>
+<pre class="language-bash" data-language="bash"><code class="language-bash"><span class="token builtin class-name">cd</span> yobot/src/client/
+
+<span class="token comment"># 安装依赖</span>
+pip3 <span class="token function">install</span> -r requirements.txt --user
+<span class="token comment"># 国内可加上参数 -i https://pypi.tuna.tsinghua.edu.cn/simple</span>
+
+<span class="token comment"># 生成 yobotg</span>
+python3 main.py
+
+<span class="token comment"># 启用 yobot</span>
+<span class="token function">sh</span> yobotg.sh</code></pre>
+
+<p>这里会提示 </p>
+<pre class="language-bash" data-language="bash"><code class="language-bash">Traceback <span class="token punctuation">(</span>most recent call last<span class="token punctuation">)</span>:
+  File <span class="token string">"main.py"</span>, line <span class="token number">36</span>, <span class="token keyword">in</span> <span class="token operator">&lt;</span>module<span class="token operator">></span>
+    from aiocqhttp <span class="token function">import</span> CQHttp
+ModuleNotFoundError: No module named <span class="token string">'aiocqhttp'</span></code></pre>
+<p>我们通过pip3进行aiocqhttp的安装</p>
+<pre class="language-bash" data-language="bash"><code class="language-bash">pip3 <span class="token function">install</span> aiocqhttp<span class="token punctuation">[</span>all<span class="token punctuation">]</span></code></pre>
+<p>这里可能会提示我们缺少python.h<br>我们通过下方命令安装python-devel</p>
+<pre class="language-bash" data-language="bash"><code class="language-bash">yum <span class="token function">install</span> python3-devel</code></pre>
+<p>如果提示与已存在的python-devel冲突，通过 yum remove 名字  来卸载已安装的python-devel后再进行安装  </p>
+<p>安装完devel后再次安装aiocqhttp，成功安装后再次运行安装依赖，应该就能顺利执行完毕。<br>代码如下:</p>
+<pre class="language-bash" data-language="bash"><code class="language-bash">pip3 <span class="token function">install</span> aiocqhttp<span class="token punctuation">[</span>all<span class="token punctuation">]</span>
+pip3 <span class="token function">install</span> -r requirements.txt --user</code></pre>
+
+<br>
+安装完依赖不出错的话再次启动yobot  
+
+<pre class="language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># 启用 yobot</span>
+<span class="token function">sh</span> yobotg.sh</code></pre>
+<p>出现这个界面就表明yobot已经成功安装了。</p>
+<pre class="language-none"><code class="language-none">&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
+              _           _
+             | |         | |
+  _   _  ___ | |__   ___ | |_
+ | | | |&#x2F; _ \| &#39;_ \ &#x2F; _ \| __|
+ | |_| | (_) | |_) | (_) | |_
+  \__, |\___&#x2F;|_.__&#x2F; \___&#x2F; \__|
+   __&#x2F; |
+  |___&#x2F;
+&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
+正在初始化...
+设置已初始化，发送help获取帮助
+yobot[v3.6.11]源码版
+初始化完成，启动服务...
+Running on https:&#x2F;&#x2F;0.0.0.0:9222 (CTRL + C to quit)
+[2021-04-21 09:55:52,474] ASGI Framework Lifespan error, continuing without Lifespan support
+刷新日服日程表成功
+刷新台服日程表成功
+刷新国服日程表成功</code></pre>
+<p>完成后就可以<kbd>Ctrl</kbd>+<kbd>A</kbd> <kbd>Ctrl</kbd>+<kbd>d</kbd>把yobot挂到后台运行了。</p>
+<h1 id="go-cqhttp部分"><a href="#go-cqhttp部分" class="headerlink" title="go-cqhttp部分"></a>go-cqhttp部分</h1><p>通过screen新建一个窗口</p>
+<pre class="language-bash" data-language="bash"><code class="language-bash"><span class="token function">screen</span> -S miraiqq</code></pre>
+<p>然后</p>
+<pre class="language-bash" data-language="bash"><code class="language-bash"><span class="token function">mkdir</span> -p ~/qqbot/mirai
+<span class="token builtin class-name">cd</span> ~/qqbot/mirai</code></pre>
+<p>由于国内众所周知的原因，在国内连接不上github，下载速度很感人，所以这里我们直接将文件通过sftp上传到服务器  /root/qqbot/miraiqq/ 下。<br>文件是博主从github上直接下的最新版<br><a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1jQQsVmIjhxgLrs5CqBUpaA">下载连接</a><br>提取码：20w1<br>上传完毕后继续操作</p>
+<pre class="language-bash" data-language="bash"><code class="language-bash"><span class="token function">tar</span> zxvf go-cqhttp_linux_amd64.tar.gz
+<span class="token function">rm</span> go-cqhttp_linux_amd64.tar.gz</code></pre>
+<p>修改go-cqhttp配置文件</p>
+<pre class="language-bash" data-language="bash"><code class="language-bash"><span class="token builtin class-name">cd</span> ~/qqbot/mirai
+
+<span class="token comment"># 先执行</span>
+./go-cqhttp
+<span class="token comment"># 此时会生成一个 config.yml 文件</span>
+<span class="token comment"># 修改这个文件</span></code></pre>
+<p>这里可以直接下载我调好的config.yml模板，在里面修改qq账号密码然后就可以启动登录了<br><a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1p5roH3w2NJkr0kii_e_8Fw">下载链接</a><br>提取码：94ai<br>下载后修改config.yml中的qq账号和qq密码两栏<br>将其上传至/root/qqbot/mirai/覆盖已存在的config.yml<br>启动go-cqhttp  </p>
+<pre class="language-bash" data-language="bash"><code class="language-bash"><span class="token builtin class-name">cd</span> ~/qqbot/mirai
+<span class="token function">chmod</span> +x go-cqhttp
+./go-cqhttp</code></pre>
+<p>部署完成，<kbd>Ctrl</kbd>+<kbd>A</kbd> <kbd>Ctrl</kbd>+<kbd>d</kbd>将mirai也挂起到后台  </p>
+<h1 id="验证安装"><a href="#验证安装" class="headerlink" title="验证安装"></a>验证安装</h1><p>向mirai登录的qq号发送version，回复当前版本号说明配置成功</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%95%99%E7%A8%8B/" rel="tag"># 教程</a>
+              <a href="/tags/yobot/" rel="tag"># yobot</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2021/04/22/blog%E6%90%AD%E5%BB%BA%E9%97%AE%E9%A2%98%E6%B1%87%E6%80%BB/" rel="next" title="HEXO blog搭建问题汇总">
+      HEXO blog搭建问题汇总 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B3%E4%BA%8E%E5%9C%A8%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%E9%80%9A%E8%BF%87centos7%E9%83%A8%E7%BD%B2go-cqhttp-%E5%92%8C-yobot"><span class="nav-number">1.</span> <span class="nav-text">关于在云服务器上通过centos7部署go-cqhttp 和 yobot</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#yobot%E9%83%A8%E5%88%86"><span class="nav-number"></span> <span class="nav-text">yobot部分</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#go-cqhttp%E9%83%A8%E5%88%86"><span class="nav-number"></span> <span class="nav-text">go-cqhttp部分</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%AA%8C%E8%AF%81%E5%AE%89%E8%A3%85"><span class="nav-number"></span> <span class="nav-text">验证安装</span></a></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="h300579"
+      src="http://q2.qlogo.cn/headimg_dl?dst_uin=1193787696&spec=4">
+  <p class="site-author-name" itemprop="name">h300579</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/1819132" title="Bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;1819132" rel="noopener" target="_blank"><i class="fas fa-tv fa-fw"></i>Bilibili</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">h300579</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
