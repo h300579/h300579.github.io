@@ -174,7 +174,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="cn">
-    <link itemprop="mainEntityOfPage" href="https://h300579.github.io/2023/03/24/Qt%E6%95%B0%E6%8D%AE%E5%BA%93/">
+    <link itemprop="mainEntityOfPage" href="https://h300579.github.io/2023/03/24/QByteArray%E7%9B%B8%E5%85%B3/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="http://q2.qlogo.cn/headimg_dl?dst_uin=1193787696&spec=4">
@@ -188,7 +188,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2023/03/24/Qt%E6%95%B0%E6%8D%AE%E5%BA%93/" class="post-title-link" itemprop="url">Qt数据库</a>
+            <a href="/2023/03/24/QByteArray%E7%9B%B8%E5%85%B3/" class="post-title-link" itemprop="url">QByteArray 的使用方法与技巧</a>
         </h2>
 
         <div class="post-meta">
@@ -197,10 +197,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2023-03-24 12:00:00 / Modified: 18:05:37" itemprop="dateCreated datePublished" datetime="2023-03-24T12:00:00+08:00">2023-03-24</time>
+              <time title="Created: 2023-03-24 16:38:37" itemprop="dateCreated datePublished" datetime="2023-03-24T16:38:37+08:00">2023-03-24</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-02-14 18:05:11" itemprop="dateModified" datetime="2022-02-14T18:05:11+08:00">2022-02-14</time>
+              </span>
 
           
 
@@ -213,50 +219,46 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>&emsp;&emsp;最近项目遇到需求，每批芯片有上千颗，需要在一个温度点下完成所有的数据采集后，存入数据库，换芯片，采集，直到一批芯片全部采集完。由于这个数量级，想要将所有数据存在本地内存已经是很不现实很不方便了，所以必须引入数据库，以解决数据量的问题。<br>&emsp;&emsp;所以需要使用SQLite数据库，轻量，好用。而Qt与数据库交互需要用到的便是 QSqlDatabase相关的方法了。<br>&emsp;&emsp;本文章仅记录该次工作所用到的方法和流程。</p>
-<h1 id="方法变量一览"><a href="#方法变量一览" class="headerlink" title="方法变量一览"></a>方法变量一览</h1><pre class="language-none"><code class="language-none">QSqlDatabase db;</code></pre>
-<p>数据库交互的共用变量，管理与数据库的连接，所以需要声明在头文件。</p>
-<pre class="language-none"><code class="language-none">db &#x3D; QSqlDatabase::addDatabase(&quot;QSQLITE&quot;,&quot;connect1&quot;);
-db.setDatabaseName(QApplication::applicationDirPath()+tr(&quot;&#x2F;test.db&quot;));
-db.open();</code></pre>
-<p>此处为初始化数据库相关的内容，通过 addDatabase 来进行数据库类型（QSQLITE）和连接名称（connect1）的声明。因为本次内容为SQLITE，故第一个参数填QSQLITE，此外若为MYSQL，可填QMYSQL。第二个参数为非必要参数，用以在多个数据库建立连接时，做名字区分，不然会相互顶替连接。<br>setDatabaseName，在SQLITE中就是设置文件路径，若没有文件则创建文件，MySQL则是命名数据库。<br>open，开启与数据库的连接，任何sql语句都只有连接状态才能正确执行。  </p>
-<pre class="language-none"><code class="language-none">QSqlQuery query(db);
-bool success &#x3D; query.exec(&quot;CREATE TABLE Mydatas(&quot;
-                            &quot;id INTEGER PRIMARY KEY AUTOINCREMENT,&quot;
-                            &quot;dataA INTEGER,&quot;
-                            &quot;dataB INTEGER,&quot;
-                            &quot;Result INTEGER)&quot;);
+          <p>最近做了个芯片烧录的上位机，因为功能设计到串口连续数据读取打包解析等内容，需要用到 QByteArray，且存着原始二进制数据。关于 QByteArray 的详细介绍，有空可以阅览一下 Qt 的 help，这里记录下常用的相关操作，方便使用查阅用法。</p>
+<h2 id="访问与赋值"><a href="#访问与赋值" class="headerlink" title="访问与赋值"></a>访问与赋值</h2><p>访问数据有四种方式， [] at() data[] constData[]，其中 [] 和 at 为可读可写，at 和 constData[] 为只读，因此访问效率最高。</p>
+<h2 id="在末尾追加字符数据"><a href="#在末尾追加字符数据" class="headerlink" title="在末尾追加字符数据"></a>在末尾追加字符数据</h2><pre class="language-none"><code class="language-none">QByteArray a(&quot;free&quot;);
+QByteArray b(&quot;dom&quot;);
+a.append(b);</code></pre>
+<p>还有 a+=b，听导师说这样会有拼接遗漏数据的可能？<br>还有 memcpy 拷贝的方法，虽然我没试成功过。  </p>
+<h2 id="查找某个字符的位置"><a href="#查找某个字符的位置" class="headerlink" title="查找某个字符的位置"></a>查找某个字符的位置</h2><p>indexOf，返回对应数字的第一个位置。  </p>
+<pre class="language-none"><code class="language-none">QByteArray a(&quot;abcd&quot;);
+int c &#x3D; a.indexOf(&#39;b&#39;);</code></pre>
+<h2 id="从左向右截取字符串"><a href="#从左向右截取字符串" class="headerlink" title="从左向右截取字符串"></a>从左向右截取字符串</h2><pre class="language-none"><code class="language-none">QByteArray a(&quot;pineapple&quot;);
+QByteArray b &#x3D; a.left(4);
+b &#x3D; &quot;pine&quot;;</code></pre>
+<h2 id="从右向左截取字符串"><a href="#从右向左截取字符串" class="headerlink" title="从右向左截取字符串"></a>从右向左截取字符串</h2><pre class="language-none"><code class="language-none">QByteArray a(&quot;pineapple&quot;);
+QByteArray b &#x3D; a.right(5);
+b &#x3D; &quot;apple&quot;;</code></pre>
 
-QSqlQuery query(db);
-QString sql &#x3D; QString(&quot;UPDATE Mydatas SET Result &#x3D; %2 WHERE id &#x3D; %1&quot;)
-                        .arg(a).arg(b);
-query.prepare(sql);
-bool result &#x3D; query.exec();
-query.finish();</code></pre>
-<p>执行SQL语句，可以通过 QString 字符串拼接实现数据绑定，也可通过 bindvalue 实现数据绑定。执行后一定要记得finish掉query，不然可能会影响事务的提交与回滚。</p>
-<pre class="language-none"><code class="language-none">db.transaction();
-db.commit();
-db.rollback();</code></pre>
-<p>事务方法很简单，通过 transaction 开启事务，往后所有的 sql 操作都算在事务当中，完成一个事务后通过 commit 提交事务，通过 rollback 回滚事务。这里需要注意每个 sql 操作前可能会有 db.open 检查操作，必须去掉，不然数据库的重新开启会关闭事务，导致 commit rollback 失败。  </p>
-<pre class="language-none"><code class="language-none">if(res1&amp;&amp;res2)&#123;
-    if(!QSqlDatabase::database().commit())&#123;
-        QMessageBox::critical(this,&quot;Error&quot;,&quot;操作失败，将要回滚&quot;);
-        if(!QSqlDatabase::database().rollback())&#123;
-            QMessageBox::critical(this,&quot;Error&quot;,&quot;回滚失败&quot;);
-        &#125;
-    &#125;else&#123;
-        doShowBackResult();
-        &#x2F;&#x2F;qDebug()&lt;&lt;&quot;show &quot;;
-    &#125;
-    &#125;else&#123;
-    qDebug()&lt;&lt;query.lastError();
-    QMessageBox::critical(this,&quot;Error&quot;,&quot;操作失败，将要回滚&quot;);
-    if(!QSqlDatabase::database().rollback())&#123;
-        QMessageBox::critical(this,&quot;Error&quot;,&quot;回滚失败&quot;);
-        qDebug()&lt;&lt;QSqlDatabase::database().lastError();
-    &#125;
-&#125;</code></pre>
-<p>上为标准事务写法，带错误信息。</p>
+<h2 id="截取部分字符串"><a href="#截取部分字符串" class="headerlink" title="截取部分字符串"></a>截取部分字符串</h2><pre class="language-none"><code class="language-none">QByteArray a(&quot;hello world&quot;);
+QByteArray b &#x3D; a.mid(6,3);  &#x2F;&#x2F;第一个参数代表从哪里开始，0对应h，5对应空格，第二个参数代表开始后多少长度
+b &#x3D; &quot;wor&quot;;
+QByteArray c &#x3D; a.mid(6);    &#x2F;&#x2F;一个参数就只代表从哪里开始，截取剩下所有内容。
+c &#x3D; &quot;world&quot;;</code></pre>
+
+<h2 id="删除某段字符"><a href="#删除某段字符" class="headerlink" title="删除某段字符"></a>删除某段字符</h2><pre class="language-none"><code class="language-none">QByteArray a(&quot;hello world);
+a.remove(6,3);
+a &#x3D; &quot;hello ld&quot;;</code></pre>
+<p><text class="color:red;"> 这个讲道理和截取左右字符串是不是互补关系呢？如果是的话效率是一样的吗？有待观察验证。</text></p>
+<h2 id="指定位置插入字符串"><a href="#指定位置插入字符串" class="headerlink" title="指定位置插入字符串"></a>指定位置插入字符串</h2><pre class="language-none"><code class="language-none">QByteArray a(&quot;helloworld&quot;);
+a.insert(5,QByteArray(&quot; &quot;));
+a &#x3D; &quot;hello world&quot;;</code></pre>
+
+<h2 id="字符替换"><a href="#字符替换" class="headerlink" title="字符替换"></a>字符替换</h2><pre class="language-none"><code class="language-none">QByteArray a(&quot;GoodBye world&quot;);
+QByteArray b(&quot;hello&quot;);
+a.replace(0, 7, b); &#x2F;&#x2F; 0表示从第0个字符开始，7表示替换长度为7的内容，b表示替换的内容，长度可以不同。
+a &#x3D; hello world;</code></pre>
+<h2 id="Leader教的转换方法"><a href="#Leader教的转换方法" class="headerlink" title="Leader教的转换方法"></a>Leader教的转换方法</h2><pre class="language-none"><code class="language-none">QByteArray a &#x3D; QSerialPort.readAll();
+QString tt &#x3D; a.toHex();
+QByteArray tt2 &#x3D; QByteArray().fromHex(tt.toLatin1());</code></pre>
+<p>这里需要好好学习下各个函数的作用，列出来，不然直接copy拿去用就好。  </p>
+<hr>
+<h2 id="参考资料："><a href="#参考资料：" class="headerlink" title="参考资料："></a>参考资料：</h2><p>QByteArray常见使用方式：<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_38931060/article/details/117992884?spm=1001.2014.3001.5502">https://blog.csdn.net/weixin_38931060/article/details/117992884?spm=1001.2014.3001.5502</a><br>QT中常见QByteArray，QString，char,10进制，16进制之间转换：<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_38931060/article/details/117994816?spm=1001.2014.3001.5502">https://blog.csdn.net/weixin_38931060/article/details/117994816?spm=1001.2014.3001.5502</a></p>
 
       
     </div>
@@ -275,7 +277,7 @@ db.rollback();</code></pre>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
+    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
   </nav>
 
 
@@ -343,12 +345,12 @@ db.rollback();</code></pre>
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-count">10</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-count">14</span>
         <span class="site-state-item-name">tags</span>
       </div>
   </nav>
