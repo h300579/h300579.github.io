@@ -28,7 +28,7 @@
 <meta property="og:description" content="前言鉴于工作需求，日志记录工具是必不可少的存在。现对 spdlog 在c++项目的使用方法进行探究。   项目地址https:&#x2F;&#x2F;github.com&#x2F;gabime&#x2F;spdlog#compiled-version-recommended---much-faster-compile-times  官方说明文档地址    https:&#x2F;&#x2F;github.com&#x2F;gabime&#x2F;spdlog&#x2F;wiki  使">
 <meta property="og:locale">
 <meta property="article:published_time" content="2024-01-30T08:00:45.000Z">
-<meta property="article:modified_time" content="2024-01-31T03:03:41.000Z">
+<meta property="article:modified_time" content="2024-01-31T03:07:03.000Z">
 <meta property="article:author" content="h300579">
 <meta property="article:tag" content="技术">
 <meta property="article:tag" content="spdlog">
@@ -211,7 +211,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2024-01-31 11:03:41" itemprop="dateModified" datetime="2024-01-31T11:03:41+08:00">2024-01-31</time>
+                <time title="Modified: 2024-01-31 11:07:03" itemprop="dateModified" datetime="2024-01-31T11:07:03+08:00">2024-01-31</time>
               </span>
 
           
@@ -354,35 +354,8 @@ int main(int argc, char *argv[])
 <td>stdout_color_sink</td>
 <td>标准输出</td>
 </tr>
-<tr>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>代码中使用时需要添加对应 sink 头文件。</td>
-<td></td>
-</tr>
-<tr>
-<td>不同 sink 需要的构造参数不同，可参考对应构造函数。</td>
-<td></td>
-</tr>
-<tr>
-<td>其中 truncate 设定 false 表示如果存在同名日志，在其后继续记录，否则清空从头开始记录。</td>
-<td></td>
-</tr>
-<tr>
-<td>每一个 sink 构造时分为 mt 和 st，根据官方文档说明 mt 表示 multithrad，st 表示 singlethread。</td>
-<td></td>
-</tr>
-<tr>
-<td>为了线程安全只用 mt 就好，st 特殊需求可能会用到。</td>
-<td></td>
-</tr>
 </tbody></table>
+<p>代码中使用时需要添加对应 sink 头文件。<br>不同 sink 需要的构造参数不同，可参考对应构造函数。<br>其中 truncate 设定 false 表示如果存在同名日志，在其后继续记录，否则清空从头开始记录。<br>每一个 sink 构造时分为 mt 和 st，根据官方文档说明 mt 表示 multithrad，st 表示 singlethread。<br>为了线程安全只用 mt 就好，st 特殊需求可能会用到。  </p>
 <h2 id="新建-logger"><a href="#新建-logger" class="headerlink" title="新建 logger"></a>新建 logger</h2><pre><code>    // 组合sink列表
     spdlog::sinks_init_list sink_list = &#123; console_sink, file_sink_trace, file_sink_debug, file_sink_info, file_sink_warn,
                                         file_sink_err, file_sink_critical&#125;;
